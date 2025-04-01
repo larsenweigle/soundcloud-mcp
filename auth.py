@@ -5,6 +5,8 @@ import base64
 CLIENT_ID = os.getenv("SOUNDCLOUD_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SOUNDCLOUD_CLIENT_SECRET")
 
+# ----- Client Credentials Token Exchange Flow -----
+
 """
 # obtain the access token
 
@@ -101,4 +103,11 @@ def refresh_soundcloud_token(refresh_token: str) -> str:
     except Exception as e:
         print(f"Error refreshing soundcloud token: {e}")
         return None
-    
+
+
+if __name__ == "__main__":
+    import json
+    # Save the token to a file
+    token = get_soundcloud_token_client_credentials()
+    with open("soundcloud_token.json", "w") as f:
+        json.dump({"token": token}, f)
