@@ -1,6 +1,11 @@
-import os
-import requests
+
 import base64
+import os
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 CLIENT_ID = os.getenv("SOUNDCLOUD_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SOUNDCLOUD_CLIENT_SECRET")
@@ -52,7 +57,15 @@ def get_soundcloud_token_client_credentials() -> str:
         response = requests.post(url, headers=headers, data=data)
         response.raise_for_status()
         print(f"Successfully got soundcloud token: {response.json()}")
-        return response.json()["access_token"]
+
+        response_json = response.json()
+
+        # TODO add created at time so we can refresh the token if it's expired
+        
+        with open("soundcloud_token.json", "w") as f:
+            json.dump(response_json, f)
+
+        return response_json["access_token"]
     except Exception as e:
         print(f"Error getting soundcloud token: {e}")
         return None
@@ -107,7 +120,13 @@ def refresh_soundcloud_token(refresh_token: str) -> str:
 
 if __name__ == "__main__":
     import json
+
+    # test encoding
+    test_string = "my_client_id:my_client_secret"
+    encoded_string = base64.b64encode(test_string.encode()).decode()
+    assert encoded_string == "bXlfY2xpZW50X2lkOm15X2NsaWVudF9zZWNyZXQ="
+    print(f"Encoded as expected: {encoded_string}")
+
     # Save the token to a file
     token = get_soundcloud_token_client_credentials()
-    with open("soundcloud_token.json", "w") as f:
-        json.dump({"token": token}, f)
+    print(f"Token: {token}")
