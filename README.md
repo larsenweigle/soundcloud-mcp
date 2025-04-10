@@ -1,3 +1,3 @@
 # SoundCloud API MCP
 
-WIP 🏗️
+WIP 🏗️ but its kinda working 🥹
